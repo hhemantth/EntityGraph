@@ -2,6 +2,9 @@
 
 EntityGraph is a local investigation workspace for turning exported security events into an interactive entity graph. It runs entirely in the browser and does not send event data to a server.
 
+<img width="1895" height="932" alt="image" src="https://github.com/user-attachments/assets/5c861f19-42a4-4c17-b8a0-faf7221044d8" />
+
+
 ## Start
 
 1. Extract the project folder.
