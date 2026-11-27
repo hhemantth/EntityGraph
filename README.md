@@ -1,6 +1,6 @@
 # EntityGraph
 
-EntityGraph is a local-first investigation workspace for turning exported security events into an interactive entity graph. It runs entirely in the browser and does not send event data to a server.
+EntityGraph is a local investigation workspace for turning exported security events into an interactive entity graph. It runs entirely in the browser and does not send event data to a server.
 
 ## Start
 
