@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="EntityGraph — local-first security investigation graph">
+  <title>EntityGraph</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" aria-label="EntityGraph home">
+      <img src="assets/entitygraph-logo.svg" alt="" width="38" height="38">
+      <div>
+        <div class="brand-name">EntityGraph</div>
+        <div class="brand-tagline">Investigation workspace</div>
+      </div>
+    </div>
+    <div class="investigation-title">
+      <input id="caseTitle" value="Untitled investigation" aria-label="Investigation title" spellcheck="false">
+      <span id="saveState" class="save-state">Local workspace</span>
+    </div>
+    <div class="top-actions">
+      <button class="btn ghost" id="saveLocalBtn" title="Save this investigation in the browser">Save</button>
+      <button class="btn ghost" id="loadLocalBtn" title="Load the last browser save">Open</button>
+      <div class="menu-wrap">
+        <button class="btn ghost" id="exportMenuBtn" aria-haspopup="true" aria-expanded="false">Export ▾</button>
+        <div class="menu hidden" id="exportMenu">
+          <button data-export="json">Investigation JSON</button>
+          <button data-export="png">Graph PNG</button>
+          <button data-export="nodes">Entities CSV</button>
+          <button data-export="edges">Relationships CSV</button>
+        </div>
+      </div>
+      <button class="btn danger-ghost" id="clearBtn">Clear</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="sidebar left-panel">
+      <section>
+        <div class="section-heading"><span>Data</span><span id="importCount" class="badge">0 files</span></div>
+        <label class="import-drop" id="importDrop" for="fileInput">
+          <input id="fileInput" type="file" accept=".csv,.json,application/json,text/csv" multiple hidden>
+          <span class="drop-icon">＋</span>
+          <strong>Import events</strong>
+          <small>CSV or EntityGraph JSON</small>
+        </label>
+        <p class="hint">Files stay in this browser. Nothing is uploaded.</p>
+      </section>
+
+      <section>
+        <div class="section-heading"><span>Find</span><kbd>/</kbd></div>
+        <div class="search-box">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Hostname, user, IP, hash…" autocomplete="off">
+          <button id="clearSearch" title="Clear search" aria-label="Clear search">×</button>
+        </div>
+        <div id="searchResults" class="search-results hidden"></div>
+      </section>
+
+      <section>
+        <div class="section-heading"><span>View</span></div>
+        <label class="field-label" for="layoutSelect">Layout</label>
+        <select id="layoutSelect">
+          <option value="force">Relationship</option>
+          <option value="radial">Radial</option>
+          <option value="grid">Grid</option>
+        </select>
+        <div class="button-grid">
+          <button class="btn compact" id="fitBtn">Fit graph</button>
+          <button class="btn compact" id="relayoutBtn">Re-layout</button>
+          <button class="btn compact" id="showAllBtn">Show all</button>
+          <button class="btn compact" id="hideBtn">Hide selected</button>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-heading"><span>Entity types</span><button class="text-btn" id="typesAllBtn">All</button></div>
+        <div id="typeFilters" class="filter-list"><div class="empty-small">Import data to build filters.</div></div>
+      </section>
+
+      <section id="timelineSection" class="hidden">
+        <div class="section-heading"><span>Time window</span><button class="text-btn" id="resetTimeBtn">Reset</button></div>
+        <div class="timeline-labels"><span id="timeStartLabel">—</span><span id="timeEndLabel">—</span></div>
+        <div class="dual-range">
+          <input id="timeStart" type="range" min="0" max="100" value="0">
+          <input id="timeEnd" type="range" min="0" max="100" value="100">
+        </div>
+      </section>
+
+      <section>
+        <div class="section-heading"><span>Tools</span></div>
+        <div class="button-stack">
+          <button class="btn" id="addEntityBtn">Add entity</button>
+          <button class="btn" id="addRelationBtn">Add relationship</button>
+          <button class="btn" id="mergeBtn" disabled>Resolve same entity</button>
+          <button class="btn" id="pathBtn" disabled>Find shortest path</button>
+          <button class="btn" id="undoBtn" disabled>Undo merge</button>
+        </div>
+      </section>
+    </aside>
+
+    <section class="graph-stage" id="graphStage" aria-label="Investigation graph">
+      <canvas id="graphCanvas" tabindex="0"></canvas>
+      <div id="emptyState" class="empty-state">
+        <img src="assets/entitygraph-logo.svg" alt="" width="72" height="72">
+        <h1>Build an investigation graph</h1>
+        <p>Import a Sentinel or Defender CSV export. EntityGraph will detect entities, connect supporting events, and keep the original evidence available for review.</p>
+        <button class="btn primary" id="emptyImportBtn">Import events</button>
+        <span>or drop CSV / JSON files anywhere on the canvas</span>
+      </div>
+      <div class="canvas-toolbar">
+        <button id="zoomInBtn" title="Zoom in" aria-label="Zoom in">＋</button>
+        <button id="zoomOutBtn" title="Zoom out" aria-label="Zoom out">−</button>
+        <button id="centerBtn" title="Fit graph" aria-label="Fit graph">⌂</button>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="graph-status" id="graphStatus">0 entities · 0 relationships</div>
+      <div class="selection-help" id="selectionHelp">Shift-click to select multiple entities</div>
+    </section>
+
+    <aside class="sidebar inspector" id="inspector">
+      <div class="inspector-empty" id="inspectorEmpty">
+        <div class="inspector-empty-icon">◎</div>
+        <h2>Nothing selected</h2>
+        <p>Select an entity or relationship to review its properties and evidence.</p>
+      </div>
+      <div id="inspectorContent" class="hidden"></div>
+    </aside>
+  </main>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+  <dialog id="entityDialog" class="dialog">
+    <form method="dialog" id="entityForm">
+      <div class="dialog-head"><h2 id="entityDialogTitle">Add entity</h2><button value="cancel" aria-label="Close">×</button></div>
+      <div class="dialog-body two-col">
+        <label><span>Label</span><input id="entityLabel" required></label>
+        <label><span>Entity type</span><select id="entityType"></select></label>
+        <label><span>Risk</span><select id="entityRisk"><option>Unknown</option><option>Informational</option><option>Low</option><option>Medium</option><option>High</option><option>Malicious</option><option>Benign</option></select></label>
+        <label><span>Status</span><select id="entityStatus"><option>Unreviewed</option><option>Investigating</option><option>Escalated</option><option>Closed</option></select></label>
+        <label class="span-2"><span>Notes</span><textarea id="entityNotes" rows="4"></textarea></label>
+      </div>
+      <div class="dialog-actions"><button value="cancel" class="btn">Cancel</button><button id="entitySubmit" value="default" class="btn primary">Save entity</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="relationDialog" class="dialog">
+    <form method="dialog" id="relationForm">
+      <div class="dialog-head"><h2>Add relationship</h2><button value="cancel" aria-label="Close">×</button></div>
+      <div class="dialog-body">
+        <label><span>Source entity</span><select id="relationSource" required></select></label>
+        <label><span>Relationship</span><input id="relationName" value="RELATED_TO" required></label>
+        <label><span>Target entity</span><select id="relationTarget" required></select></label>
+        <label><span>Notes / evidence</span><textarea id="relationNotes" rows="3"></textarea></label>
+      </div>
+      <div class="dialog-actions"><button value="cancel" class="btn">Cancel</button><button id="relationSubmit" value="default" class="btn primary">Add relationship</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="mergeDialog" class="dialog">
+    <form method="dialog" id="mergeForm">
+      <div class="dialog-head"><div><h2>Resolve same entity</h2><p>Combine selected identities and remap their relationships.</p></div><button value="cancel" aria-label="Close">×</button></div>
+      <div class="dialog-body">
+        <label><span>Starting identity</span><select id="mergeCanonical"></select></label>
+        <label><span>Canonical label</span><input id="mergeLabel" required></label>
+        <label><span>Canonical type</span><select id="mergeType"></select></label>
+        <div id="mergeSummary" class="merge-summary"></div>
+      </div>
+      <div class="dialog-actions"><button value="cancel" class="btn">Cancel</button><button id="mergeSubmit" value="default" class="btn primary">Merge and resolve</button></div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Timestamp,DeviceName,DeviceId,AccountUpn,AccountDisplayName,AccountId,RemoteIP,RemotePort,InitiatingProcessFileName,SHA256,ActionType,Severity
+2026-11-27T08:10:15Z,WKSTN-042,dvc-042,alex.wong@example.org,Alex Wong,aad-10042,198.51.100.23,443,powershell.exe,7cc2e7d0c9f923cc4cb41b8ea4d7789f356d05a056d0ff8ff7c2bf80d067a6d1,ConnectionSuccess,High
+2026-11-27T08:12:01Z,WKSTN-042,dvc-042,alex.wong@example.org,Alex Wong,aad-10042,203.0.113.77,8080,powershell.exe,7cc2e7d0c9f923cc4cb41b8ea4d7789f356d05a056d0ff8ff7c2bf80d067a6d1,ConnectionSuccess,High
+2026-11-27T08:18:44Z,SRV-FILE-07,dvc-107,svc-backup@example.org,Backup Service,aad-svc-77,198.51.100.23,445,rundll32.exe,9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08,ConnectionSuccess,Medium
+2026-11-27T08:23:10Z,WKSTN-042,dvc-042,alex.wong@example.org,Alex Wong,aad-10042,192.0.2.18,53,chrome.exe,2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae,DnsQuery,Low

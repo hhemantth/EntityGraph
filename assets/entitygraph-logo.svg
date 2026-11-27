@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-labelledby="title desc">
+  <title id="title">EntityGraph</title>
+  <desc id="desc">Three connected entity nodes forming a graph</desc>
+  <defs>
+    <linearGradient id="eg" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="13" fill="#111827"/>
+  <path d="M16 15.5 31.5 12M16 15.5l5 18M31.5 12 35 30.5M21 33.5l14-3" fill="none" stroke="url(#eg)" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="16" cy="15.5" r="6" fill="#0f172a" stroke="#67e8f9" stroke-width="3"/>
+  <circle cx="31.5" cy="12" r="5" fill="#0f172a" stroke="#a78bfa" stroke-width="3"/>
+  <circle cx="21" cy="33.5" r="5.5" fill="#0f172a" stroke="#38bdf8" stroke-width="3"/>
+  <circle cx="35" cy="30.5" r="6.5" fill="#0f172a" stroke="#8b5cf6" stroke-width="3"/>
+</svg>
